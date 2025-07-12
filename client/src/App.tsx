@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ExpenseCard from "./components/shared/TotalExpenseCard";
-import { type ApiRoutes } from "../../server/src/app";
+import { type ApiRoutes } from "../../server/app";
 import { hc } from "hono/client";
 
 const client = hc<ApiRoutes>("/");

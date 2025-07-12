@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { createExpenseSchema } from "../validations/expenses.validations";
+import { createExpenseSchema } from "./expenses.validations";
 import { zValidator } from "@hono/zod-validator";
 
 type Expense = {
