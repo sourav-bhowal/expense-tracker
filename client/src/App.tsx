@@ -1,31 +1,42 @@
-import { useEffect, useState } from "react";
 import ExpenseCard from "./components/shared/TotalExpenseCard";
-import { type ApiRoutes } from "../../server/app";
-import { hc } from "hono/client";
+import { api } from "./lib/api";
+import { useQuery } from "@tanstack/react-query";
 
-const client = hc<ApiRoutes>("/");
+async function fetchExpenses() {
+  const response = await api.expenses["total"].$get();
+  if (!response.ok) {
+    throw new Error("Failed to fetch expenses");
+  }
+  const { total } = await response.json();
+  return total;
+}
 
 function App() {
-  const [totalExpenses, setTotalExpenses] = useState(0);
+  const {
+    data: totalExpenses,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["totalExpenses"],
+    queryFn: fetchExpenses,
+    retry: 3,
+  });
 
-  useEffect(() => {
-    const fetchTotalExpenses = async () => {
-      try {
-        const response = await client.api.expenses["total"].get();
-        console.log("Response from server:", response);
-        if (response.ok) {
-          const data = await response.json();
-          setTotalExpenses(data.total);
-        } else {
-          console.error("Failed to fetch total expenses", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching total expenses:", error);
-      }
-    };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
+  }
 
-    fetchTotalExpenses();
-  }, []);
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Error: {error.message}
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen flex items-center justify-center">

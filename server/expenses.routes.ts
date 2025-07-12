@@ -26,12 +26,12 @@ expensesRouter.get("/total", async (c) => {
 
   return c.json({
     message: "Total expenses",
-    data: total,
+    total,
   });
 });
 
 // Define a route to add an expense
-expensesRouter.post("/", zValidator("json", createExpenseSchema), async (c) => {
+expensesRouter.post("/", zValidator("json", createExpenseSchema), (c) => {
   const data = c.req.valid("json");
 
   // Here you would typically save the expense to a database
@@ -40,6 +40,9 @@ expensesRouter.post("/", zValidator("json", createExpenseSchema), async (c) => {
     title: data.title,
     amount: data.amount,
   };
+
+  // Add the new expense to the in-memory array
+  expenses.push(newExpense);
 
   return c.json({
     message: "Expense created successfully",
