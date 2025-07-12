@@ -1,6 +1,11 @@
-import ExpenseCard from "./components/shared/TotalExpenseCard";
-import { api } from "./lib/api";
+import { createFileRoute } from "@tanstack/react-router";
+import ExpenseCard from "../components/shared/TotalExpenseCard";
+import { api } from "../lib/api";
 import { useQuery } from "@tanstack/react-query";
+
+export const Route = createFileRoute("/")({
+  component: Index,
+});
 
 async function fetchExpenses() {
   const response = await api.expenses["total"].$get();
@@ -11,7 +16,7 @@ async function fetchExpenses() {
   return total;
 }
 
-function App() {
+function Index() {
   const {
     data: totalExpenses,
     isLoading,
@@ -44,5 +49,3 @@ function App() {
     </main>
   );
 }
-
-export default App;
