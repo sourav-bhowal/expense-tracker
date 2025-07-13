@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { kindeClient, sessionManager } from "./kinde";
+import { getUser } from "./kinde";
 
 export const authRouter = new Hono()
   .get("/login", async (c) => {
@@ -32,17 +33,12 @@ export const authRouter = new Hono()
     const logoutUrl = await kindeClient.logout(sessionManager(c));
     return c.redirect(logoutUrl.toString());
   })
-  .get("/me", async (c) => {
-    if (!kindeClient) {
-      return c.json({ error: "Authentication not configured" }, 500);
-    }
-    const isAuthenticated = await kindeClient.isAuthenticated(
-      sessionManager(c)
+  .get("/me", getUser, async (c) => {
+    const user = c.var.user;
+    return c.json(
+      {
+        user,
+      },
+      200
     );
-    if (!isAuthenticated) {
-      return c.json({ error: "Not authenticated" }, 401);
-    } else {
-      const user = await kindeClient.getUser(sessionManager(c));
-      return c.json(user);
-    }
   });
