@@ -31,6 +31,7 @@ function RouteComponent() {
   } = useQuery({
     queryKey: ["expenses"],
     queryFn: getExpenses,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   if (isLoading) {

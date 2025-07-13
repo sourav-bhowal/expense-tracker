@@ -5,6 +5,7 @@ import { useForm } from "@tanstack/react-form";
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/create-expense")({
 
 function RouteComponent() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const form = useForm({
     defaultValues: {
       title: "",
@@ -30,12 +32,10 @@ function RouteComponent() {
     },
     onSubmit: async ({ value }) => {
       const res = await api.expenses.$post({ json: value });
-
       if (!res.ok) {
         throw new Error("Failed to create expense");
       }
-
-      // Redirect to the expenses page
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
       navigate({ to: "/expenses" });
     },
   });
