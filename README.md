@@ -1,7 +1,7 @@
-#Tech Stack
+# Tech Stack
 
-# React
-# Tanstack Query, Router, Form
-# Hono & Hono RPC
-# Bun
-# Zod
+## React
+## Tanstack Query, Router, Form
+## Hono & Hono RPC
+## Bun
+## Zod
